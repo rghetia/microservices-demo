@@ -16,5 +16,5 @@ RUN go build -gcflags='-N -l' -o /checkoutservice .
 FROM alpine as release
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /checkoutservice /checkoutservice
-EXPOSE 5050
+EXPOSE 5050 9090
 ENTRYPOINT ["/checkoutservice"]

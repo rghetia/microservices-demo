@@ -58,6 +58,9 @@ Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb).
 - **Synthetic Load Generation:** The application demo comes with a background
   job that creates realistic usage patterns on the website using
   [Locust](https://locust.io/) load generator.
+- **[Prometheus](https://prometheus.io/)/[Grafana](https://grafana.com/) APM:** Frontend(Go)
+  and AdService(Java) are instrumented to export metrics to Prometheus. Grafana service is 
+  pre-configured with a Dashboard to show OpenCensus metrics.
 
 ## Installation
 
@@ -87,6 +90,9 @@ Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb).
    application frontend should be available at http://localhost:80 on your
    machine.
 
+1. Check Grafana at http://localhost:3000/ to view pre-configured Dashboard.
+   username/password is admin/admin
+   
 ### Option 2: Running on Google Kubernetes Engine (GKE)
 
 > 💡  Recommended for demos and making it available publicly.
