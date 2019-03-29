@@ -27,8 +27,8 @@ repositories {
 group = "adservice"
 version = "0.1.0-SNAPSHOT"
 
-def opencensusVersion = "0.18.0"
-def grpcVersion = "1.17.0"
+def opencensusVersion = "0.20.0"
+def grpcVersion = "1.19.0"
 def jacksonVersion = "2.9.6"
 
 tasks.withType(JavaCompile) {
@@ -49,12 +49,14 @@ dependencies {
                 "io.opencensus:opencensus-api:${opencensusVersion}",
                 "io.opencensus:opencensus-contrib-grpc-util:${opencensusVersion}",
                 "io.opencensus:opencensus-exporter-trace-jaeger:${opencensusVersion}",
+                "io.opencensus:opencensus-exporter-trace-ocagent:${opencensusVersion}",
+                "io.opencensus:opencensus-exporter-metrics-ocagent:${opencensusVersion}",
                 "io.opencensus:opencensus-exporter-stats-stackdriver:${opencensusVersion}",
                 "io.opencensus:opencensus-exporter-trace-stackdriver:${opencensusVersion}",
                 "io.opencensus:opencensus-exporter-trace-logging:${opencensusVersion}",
                 "io.grpc:grpc-protobuf:${grpcVersion}",
                 "io.grpc:grpc-stub:${grpcVersion}",
-                "io.grpc:grpc-netty:${grpcVersion}",
+                "io.grpc:grpc-netty-shaded:${grpcVersion}",
                 "io.grpc:grpc-services:${grpcVersion}",
                 "org.apache.logging.log4j:log4j-core:2.11.1"
 
