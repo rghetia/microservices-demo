@@ -28,16 +28,25 @@ import demo_pb2_grpc
 from grpc_health.v1 import health_pb2
 from grpc_health.v1 import health_pb2_grpc
 
-from opencensus.trace.exporters import stackdriver_exporter
-from opencensus.trace.ext.grpc import server_interceptor
+from opencensus.ext.ocagent import trace_exporter as ocagent_exporter
+from opencensus.ext.grpc import server_interceptor
 from opencensus.trace.samplers import always_on
 
 # import googleclouddebugger
 
+from logger import getJSONLogger
+logger = getJSONLogger('emailservice-server')
+
 try:
     sampler = always_on.AlwaysOnSampler()
-    exporter = stackdriver_exporter.StackdriverExporter()
-    tracer_interceptor = server_interceptor.OpenCensusServerInterceptor(sampler, exporter)
+    ocagent_host = os.getenv('OC_AGENT_HOST')
+    if ocagent_host == None:
+        tracer_interceptor = server_interceptor.OpenCensusServerInterceptor()
+        logger.info("oc-agent is disabled")
+    else:
+        exporter = ocagent_exporter.OcAgentExporter("%s:55678" % (ocagent_host))
+        tracer_interceptor = server_interceptor.OpenCensusServerInterceptor(sampler, exporter)
+        logger.info("oc-agent is enabled. Agent host is %s" % (ocagent_host))
 except:
     tracer_interceptor = server_interceptor.OpenCensusServerInterceptor()
 
@@ -49,8 +58,6 @@ except:
 # except:
 #     pass
 
-from logger import getJSONLogger
-logger = getJSONLogger('emailservice-server')
 
 # Loads confirmation email template from file
 env = Environment(

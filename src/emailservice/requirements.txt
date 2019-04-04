@@ -17,7 +17,7 @@ grpcio==1.16.1
 idna==2.8                 # via requests
 jinja2==2.10
 markupsafe==1.1.0         # via jinja2
-opencensus[stackdriver]==0.1.10
+#opencensus[stackdriver]==0.1.10
 protobuf==3.6.1           # via google-api-core, googleapis-common-protos, grpcio-health-checking
 pyasn1-modules==0.2.3     # via google-auth
 pyasn1==0.4.5             # via pyasn1-modules, rsa

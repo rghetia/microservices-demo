@@ -28,5 +28,14 @@ COPY --from=builder /usr/local/lib/python3.7/ /usr/local/lib/python3.7/
 # Add the application
 COPY . .
 
+# TODO: remove this later
+RUN apt-get update && apt-get install -y git
+RUN git clone https://github.com/census-instrumentation/opencensus-python.git && cd opencensus-python && \
+    git checkout 922702b6ac61615c8e3674f152c5ee6e25ccc96d && \
+    pip install -e context/opencensus-context && \
+    pip install -e . && \
+    pip install -e contrib/opencensus-ext-ocagent && \
+    pip install -e contrib/opencensus-ext-grpc
+
 EXPOSE 8080
 ENTRYPOINT [ "python", "email_server.py" ]
