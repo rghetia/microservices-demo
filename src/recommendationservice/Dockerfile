@@ -18,6 +18,15 @@ RUN pip install -r requirements.txt
 # add files into working directory
 COPY . .
 
+# TODO: remove this later
+RUN apt-get update && apt-get install -y git
+RUN git clone https://github.com/census-instrumentation/opencensus-python.git && cd opencensus-python && \
+    git checkout 922702b6ac61615c8e3674f152c5ee6e25ccc96d && \
+    pip install -e context/opencensus-context && \
+    pip install -e . && \
+    pip install -e contrib/opencensus-ext-ocagent && \
+    pip install -e contrib/opencensus-ext-grpc
+
 # set listen port
 ENV PORT "8080"
 EXPOSE 8080

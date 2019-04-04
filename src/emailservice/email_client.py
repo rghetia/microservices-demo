@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import grpc
+import os
 
 import demo_pb2
 import demo_pb2_grpc
@@ -23,13 +24,17 @@ from logger import getJSONLogger
 logger = getJSONLogger('emailservice-client')
 
 from opencensus.trace.tracer import Tracer
-from opencensus.trace.exporters import stackdriver_exporter
-from opencensus.trace.ext.grpc import client_interceptor
+from opencensus.ext.ocagent import trace_exporter as ocagent_exporter
+from opencensus.ext.grpc import client_interceptor
 
 try:
-    exporter = stackdriver_exporter.StackdriverExporter()
-    tracer = Tracer(exporter=exporter)
-    tracer_interceptor = client_interceptor.OpenCensusClientInterceptor(tracer, host_port='0.0.0.0:8080')
+    ocagent_host = os.getenv('OC_AGENT_HOST')
+    if ocagent_host == None:
+        tracer_interceptor = client_interceptor.OpenCensusClientInterceptor()
+    else:
+        exporter = ocagent_exporter.OcAgentExporter("%s:55678" % (ocagent_host))
+        tracer = Tracer(exporter=exporter)
+        tracer_interceptor = client_interceptor.OpenCensusClientInterceptor(tracer, host_port='0.0.0.0:8080')
 except:
     tracer_interceptor = client_interceptor.OpenCensusClientInterceptor()
 

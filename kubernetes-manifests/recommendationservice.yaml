@@ -42,6 +42,11 @@ spec:
         env:
         - name: PRODUCT_CATALOG_SERVICE_ADDR
           value: "productcatalogservice:3550"
+        - name: OC_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+
         resources:
           requests:
             cpu: 100m
