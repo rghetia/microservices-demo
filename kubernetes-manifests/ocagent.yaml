@@ -16,7 +16,7 @@ data:
     exporters:
       stackdriver:
         # TODO: find a different way to specify project-id
-        project: "opencensus-microservices-demo"
+        project: "microservices-demo-app"
         enable_tracing: true
         enable_metrics: true
 ---
