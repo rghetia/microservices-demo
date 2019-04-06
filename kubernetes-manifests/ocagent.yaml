@@ -9,6 +9,9 @@ metadata:
 data:
   oc-agent-config: |
     receivers:
+      vmmetrics:
+        scrape_interval: 10
+        mount_point: "/data/proc"
       opencensus:
         address: "0.0.0.0:55678"
       jaeger: {}
@@ -16,7 +19,8 @@ data:
     exporters:
       stackdriver:
         # TODO: find a different way to specify project-id
-        project: "microservices-demo-app"
+        #project: "microservices-demo-app"
+        project: "opencensus-microservices-demo"
         enable_tracing: true
         enable_metrics: true
 ---
@@ -36,7 +40,8 @@ spec:
     spec:
       containers:
       - name: oc-agent
-        image: omnition/opencensus-agent:0.1.5
+        #image: omnition/opencensus-agent:0.1.5
+        image: ocagent
         resources:
           limits:
             cpu: 100m
@@ -57,6 +62,9 @@ spec:
         volumeMounts:
         - name: oc-agent-config-vol
           mountPath: /conf
+        - name: host-proc
+          mountPath: /data/proc
+          readOnly: true
       volumes:
         - configMap:
             name: oc-agent-conf
@@ -64,3 +72,7 @@ spec:
               - key: oc-agent-config
                 path: oc-agent-config.yaml
           name: oc-agent-config-vol
+        - hostPath:
+            path: /proc
+            type: Directory
+          name: host-proc
