@@ -9,6 +9,9 @@ metadata:
 data:
   oc-agent-config: |
     receivers:
+      vmmetrics:
+        scrape_interval: 10
+        mount_point: "/data/proc"
       opencensus:
         address: "0.0.0.0:55678"
       jaeger: {}
@@ -59,6 +62,9 @@ spec:
         volumeMounts:
         - name: oc-agent-config-vol
           mountPath: /conf
+        - name: host-proc
+          mountPath: /data/proc
+          readOnly: true
       volumes:
         - configMap:
             name: oc-agent-conf
@@ -66,3 +72,7 @@ spec:
               - key: oc-agent-config
                 path: oc-agent-config.yaml
           name: oc-agent-config-vol
+        - hostPath:
+            path: /proc
+            type: Directory
+          name: host-proc
