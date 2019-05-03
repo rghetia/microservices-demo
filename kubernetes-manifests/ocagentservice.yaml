@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oc-agent-conf
+  labels:
+    app: ocagentservice
+    component: oc-agent-conf
+data:
+  oc-agent-config: |
+    receivers:
+      vmmetrics:
+        scrape_interval: 10
+        mount_point: "/data/proc"
+      opencensus:
+        address: "0.0.0.0:55678"
+      jaeger: {}
+      zipkin: {}
+      envoy:
+        address: "0.0.0.0:55700"
+    exporters:
+      stackdriver:
+        # on GCP project is auto detected.
+        # project: "your-project-id"
+        enable_tracing: true
+        enable_metrics: true
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ocagentservice
+  labels:
+    app: ocagentservice
+spec:
+  selector:
+    matchLabels:
+      app: ocagentservice
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/bootstrapOverride: "istio-custom-bootstrap-config"
+        sidecar.istio.io/statsInclusionSuffixes: "upstream_rq_1xx,upstream_rq_2xx,upstream_rq_3xx,upstream_rq_4xx,upstream_rq_5xx,upstream_rq_time,upstream_cx_tx_bytes_total,upstream_cx_rx_bytes_total,upstream_cx_total" 
+        sidecar.istio.io/statsInclusionPrefixes: "http.{pod_ip}_"
+      labels:
+        app: ocagentservice
+    spec:
+      containers:
+      - name: ocagentservice
+        #image: ocagentservice
+        image: gcr.io/opencensus-microservices-demo/ocagentservice
+        resources:
+          limits:
+            cpu: 100m
+            memory: 500Mi
+        command:
+          - "/ocagent_linux"
+          - "--config=/conf/oc-agent-config.yaml"
+        ports:
+        - containerPort: 55678
+        - containerPort: 55679
+        - containerPort: 55700
+        volumeMounts:
+        - name: oc-agent-config-vol
+          mountPath: /conf
+        - name: host-proc
+          mountPath: /data/proc
+          readOnly: true
+      volumes:
+        - configMap:
+            name: oc-agent-conf
+            items:
+              - key: oc-agent-config
+                path: oc-agent-config.yaml
+          name: oc-agent-config-vol
+        - hostPath:
+            path: /proc
+            type: Directory
+          name: host-proc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocagentservice
+  labels:
+    app: ocagentservice
+
+spec:
+  type: ClusterIP
+  selector:
+    app: ocagentservice
+  ports:
+  - name: opencensus
+    port: 55678
+    targetPort: 55678
+  - name: debug
+    port: 55679
+    targetPort: 55679
+  - name: envoy
+    port: 55700
+    targetPort: 55700
+

@@ -22,6 +22,8 @@ spec:
       app: productcatalogservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/bootstrapOverride: "istio-custom-bootstrap-config"
       labels:
         app: productcatalogservice
     spec:
@@ -38,6 +40,8 @@ spec:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:3550"]
         env:
+#          - name: OC_AGENT_HOST
+#            value: "ocagentservice"
           - name: OC_AGENT_HOST
             valueFrom:
               fieldRef:

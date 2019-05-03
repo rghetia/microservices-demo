@@ -22,6 +22,10 @@ spec:
       app: cartservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/bootstrapOverride: "istio-custom-bootstrap-config"
+        sidecar.istio.io/statsInclusionSuffixes: "upstream_rq_1xx,upstream_rq_2xx,upstream_rq_3xx,upstream_rq_4xx,upstream_rq_5xx,upstream_rq_time,upstream_cx_tx_bytes_total,upstream_cx_rx_bytes_total,upstream_cx_total" 
+        sidecar.istio.io/statsInclusionPrefixes: "http.{pod_ip}_"
       labels:
         app: cartservice
     spec:

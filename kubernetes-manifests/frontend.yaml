@@ -22,6 +22,11 @@ spec:
       app: frontend
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/bootstrapOverride: "istio-custom-bootstrap-config"
+        sidecar.istio.io/statsInclusionSuffixes: "upstream_rq_1xx,upstream_rq_2xx,upstream_rq_3xx,upstream_rq_4xx,upstream_rq_5xx,upstream_rq_time,upstream_cx_tx_bytes_total,upstream_cx_rx_bytes_total,upstream_cx_total" 
+        sidecar.istio.io/statsInclusionPrefixes: "http.{pod_ip}_"
+#        sidecar.istio.io/statsInclusionPrefixes: "upstream_rq_total, downstream_cx_total,downstream_cx_active,downstream_rq_total,downstream_rq_active, cluster_manager, listener_manager,cluster.xds-grpc,server, http_mixer_filter, tcp_mixer_filter"
       labels:
         app: frontend
     spec:
@@ -65,6 +70,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.hostIP
+#          - name: OC_AGENT_HOST
+#            value: "ocagentservice"
           resources:
             requests:
               cpu: 100m

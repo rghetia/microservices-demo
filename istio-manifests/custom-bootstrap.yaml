@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio-custom-bootstrap-config
+  namespace: default
+data:
+  custom_bootstrap.json: |
+    {
+      "stats_flush_interval": "60s"
+    }

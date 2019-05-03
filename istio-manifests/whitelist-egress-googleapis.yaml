@@ -44,3 +44,23 @@ spec:
   - number: 443
     name: https
     protocol: HTTPS
+---
+#apiVersion: networking.istio.io/v1alpha3
+#kind: ServiceEntry
+#metadata:
+#  name: whitelist-oc-agent
+#spec:
+#  hosts:
+#  - *.*
+#  addresses:
+#  - 10.128.0.0/16 # OC Agent
+#  ports:
+#  - number: 55678
+#    name: service
+#    protocol: tcp
+#  - number: 55679
+#    name: debug
+#    protocol: tcp
+#  - number: 55700
+#    name: envoy
+#    protocol: tcp
